@@ -28,17 +28,34 @@ jobs:
         run: |
           pip install requests
 
-      - name: Run downloader
+      - name: Run downloader (debug mode)
         env:
           IG_URL: ${{ github.event.inputs.url }}
         run: |
-          python download.py
+          echo "================ DEBUG START ================"
+          echo "Python version:"
+          python -V || true
 
-      - name: Commit downloaded files
+          echo "IG_URL environment variable:"
+          echo "$IG_URL"
+
+          echo "Current directory:"
+          pwd
+
+          echo "Files in workspace:"
+          ls -lah
+
+          echo "Trying to run download.py..."
+          set -x
+          python download.py 2>&1 | tee python_error_output.txt
+          echo "Exit code: $?"
+          echo "================ DEBUG END ================"
+
+      - name: Commit downloaded files and error log
         run: |
           git config user.name "github-actions"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add downloaded.* fastdl_api_response.json error_log.txt || true
-          git commit -m "Downloaded Instagram media" || echo "Nothing to commit"
+          git add downloaded.* fastdl_api_response.json error_log.txt python_error_output.txt || true
+          git commit -m "Downloaded Instagram media and error log" || echo "Nothing to commit"
           git push
