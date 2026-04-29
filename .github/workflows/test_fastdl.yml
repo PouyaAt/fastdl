@@ -7,62 +7,48 @@ permissions:
   contents: write
 
 jobs:
-  test:
+  test-fastdl:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests
-
-      - name: Run test script
         run: |
-          echo "RUNNING TEST SCRIPT" > script_started.txt
-          python fastdl_test.py || echo "Script failed" > error_log.txt
-          echo "SCRIPT FINISHED" > script_finished.txt
+          pip install requests beautifulsoup4
 
-      - name: Create debug files
+      - name: Record branch
         run: |
-          echo "=== BRANCH INFO ===" > current_branch.txt
-          git branch >> current_branch.txt
+          echo "${GITHUB_REF_NAME}" > current_branch.txt
+
+      - name: Run FastDL test script
+        run: |
+          echo "script started" > script_started.txt
+          python fastdl_test.py || echo "python script failed" > error_log.txt
+          echo "script finished" > script_finished.txt
+
+      - name: List workspace files
+        run: |
           echo "=== WORKSPACE FILES ===" > workspace_files.txt
-          ls -lah >> workspace_files.txt
-          echo "=== GIT STATUS ===" > git_status.txt
-          git status >> git_status.txt
-          
+          ls -lh >> workspace_files.txt
+
+      - name: Save git status
+        run: |
+          git status > git_status.txt
+
       - name: Commit output to the same branch
         run: |
-          set -x
-
-          echo "Repo:"
-          git remote -v
-
-          echo "Current branch from GitHub context:"
-          echo "${{ github.ref_name }}"
-
-          echo "Git status before:"
-          git status
-
           git config user.name "github-actions"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git checkout "${{ github.ref_name }}"
+          git checkout ${{ github.ref_name }}
 
-          git add .
-
-          echo "Git status after add:"
-          git status
-
-          git commit -m "debug commit from action" || echo "Nothing to commit"
-
-          echo "Attempting push..."
-          git push origin "${{ github.ref_name }}"
+          git add -A
+          git commit -m "Add FastDL result and debug info (auto)" || echo "Nothing to commit"
+          git push origin ${{ github.ref_name }}
