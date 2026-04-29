@@ -1,9 +1,10 @@
 === WORKSPACE FILES ===
-total 40K
--rw-r--r-- 1 runner runner   5 Apr 29 10:17 current_branch.txt
--rw-r--r-- 1 runner runner 16K Apr 29 10:17 fastdl_output.html
--rw-r--r-- 1 runner runner 770 Apr 29 10:17 fastdl_test.py
--rw-r--r-- 1 runner runner 373 Apr 29 10:17 git_status.txt
--rw-r--r-- 1 runner runner  16 Apr 29 10:17 script_finished.txt
--rw-r--r-- 1 runner runner  27 Apr 29 10:17 script_started.txt
--rw-r--r-- 1 runner runner  24 Apr 29 10:17 workspace_files.txt
+total 44K
+-rw-r--r-- 1 runner runner    5 Apr 29 10:24 current_branch.txt
+-rw-r--r-- 1 runner runner   21 Apr 29 10:24 error_log.txt
+-rw-r--r-- 1 runner runner  16K Apr 29 10:24 fastdl_output.html
+-rw-r--r-- 1 runner runner 1.7K Apr 29 10:24 fastdl_test.py
+-rw-r--r-- 1 runner runner  419 Apr 29 10:24 git_status.txt
+-rw-r--r-- 1 runner runner   16 Apr 29 10:24 script_finished.txt
+-rw-r--r-- 1 runner runner   15 Apr 29 10:24 script_started.txt
+-rw-r--r-- 1 runner runner   24 Apr 29 10:24 workspace_files.txt
