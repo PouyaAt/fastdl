@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write       # <‑‑ allow commits to the repo
+  contents: write
 
 jobs:
   test:
