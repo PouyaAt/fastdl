@@ -24,19 +24,20 @@ jobs:
       - name: Run test and save output
         run: python fastdl_test.py
 
-      - name: List files after script
+      - name: Save workspace file list
         run: |
-          echo "=== WORKSPACE FILES AFTER PYTHON SCRIPT ==="
-          ls -lah
+          echo "=== FILE LIST AFTER PYTHON SCRIPT ===" > workspace_files.txt
+          ls -lah >> workspace_files.txt
 
-      - name: Commit output to repo
+      - name: Save git status
+        run: |
+          echo "=== GIT STATUS ===" > git_status.txt
+          git status >> git_status.txt
+
+      - name: Commit debug files to repo
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-
-          echo "=== GIT STATUS ==="
-          git status
-
-          git add fastdl_output.html error_log.txt || true
-          git commit -m "Add FastDL result" || echo "Nothing to commit"
-          git push
+          git add fastdl_output.html error_log.txt workspace_files.txt git_status.txt || true
+          git commit -m "Add debug info" || echo "Nothing to commit"
+          git push || true
