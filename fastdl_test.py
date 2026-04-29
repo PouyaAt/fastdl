@@ -1,87 +1,71 @@
 import requests
-from bs4 import BeautifulSoup
-import sys
 import os
+import sys
 
-FASTDL_BASE = "https://fastdl.app/en"
-POST_URL = os.getenv("IG_URL")
+IG_URL = os.getenv("IG_URL")
 
-def write_error(msg):
-    print(msg)
+def fail(msg):
     with open("error_log.txt", "w", encoding="utf-8") as f:
-        f.write(msg + "\n")
-
-if not POST_URL:
-    write_error("IG_URL environment variable is missing")
+        f.write(msg)
+    print(msg)
     sys.exit(1)
 
-print("Downloading FastDL page for:", POST_URL)
+if not IG_URL:
+    fail("IG_URL missing")
 
-# 1. Request FastDL page
+print("Calling FastDL API...")
+
+api_url = "https://fastdl.app/api/instagram"
+
+payload = {
+    "url": IG_URL
+}
+
+headers = {
+    "User-Agent": "Mozilla/5.0",
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+}
+
 try:
-    r = requests.get(f"{FASTDL_BASE}/download?url={POST_URL}", timeout=20)
+    r = requests.post(api_url, json=payload, headers=headers, timeout=30)
     r.raise_for_status()
 except Exception as e:
-    write_error("FASTDL REQUEST ERROR:\n" + repr(e))
-    sys.exit(1)
+    fail(f"API request failed: {e}")
 
-html = r.text
-with open("fastdl_output.html", "w", encoding="utf-8") as f:
-    f.write(html)
+data = r.json()
 
-print("FastDL page saved (fastdl_output.html). Length:", len(html))
+# Save raw response for debugging
+with open("fastdl_api_response.json", "w", encoding="utf-8") as f:
+    f.write(str(data))
 
-# 2. Parse the FastDL page
-soup = BeautifulSoup(html, "html.parser")
+if "media" not in data or not data["media"]:
+    fail("No media found in API response")
 
-download_link = None
-candidates = []
+media = data["media"][0]
+media_url = media.get("url")
 
-for a in soup.find_all("a"):
-    href = a.get("href")
-    if not href:
-        continue
-    if "instagram" in href or href.endswith(".jpg") or href.endswith(".mp4"):
-        candidates.append(href)
+if not media_url:
+    fail("Media URL missing in API response")
 
-if candidates:
-    download_link = candidates[0]
+print("Downloading media:", media_url)
 
-# Save some debug info about found links
-with open("found_links.txt", "w", encoding="utf-8") as f:
-    f.write("Found candidate links:\n")
-    for c in candidates:
-        f.write(c + "\n")
-
-if not download_link:
-    write_error("ERROR: Could not locate download link in HTML.\nCheck found_links.txt")
-    sys.exit(1)
-
-print("Found media link:", download_link)
-
-# 3. Download media
 try:
-    media = requests.get(download_link, timeout=20)
-    media.raise_for_status()
+    media_resp = requests.get(media_url, timeout=30)
+    media_resp.raise_for_status()
 except Exception as e:
-    write_error("MEDIA DOWNLOAD ERROR:\n" + repr(e))
-    sys.exit(1)
+    fail(f"Media download failed: {e}")
 
-content_type = media.headers.get("Content-Type", "")
-print("Content-Type:", content_type)
+content_type = media_resp.headers.get("Content-Type", "")
 
-if "image" in content_type:
-    ext = ".jpg"
-elif "video" in content_type:
-    ext = ".mp4"
+if "video" in content_type:
+    filename = "downloaded.mp4"
+elif "image" in content_type:
+    filename = "downloaded.jpg"
 else:
-    ext = ""
-
-filename = f"downloaded{ext}" if ext else "downloaded.bin"
-
-print("Saving media as:", filename)
+    filename = "downloaded.bin"
 
 with open(filename, "wb") as f:
-    f.write(media.content)
+    f.write(media_resp.content)
 
-print("DONE. Saved:", filename)
+print("Saved:", filename)
