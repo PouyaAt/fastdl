@@ -1,19 +1,20 @@
 === WORKSPACE FILES (pwd + tree) ===
 /home/runner/work/fastdl/fastdl
 
-total 60K
-drwxr-xr-x 4 runner runner 4.0K Apr 29 10:34 .
-drwxr-xr-x 3 runner runner 4.0K Apr 29 10:34 ..
-drwxr-xr-x 7 runner runner 4.0K Apr 29 10:34 .git
-drwxr-xr-x 3 runner runner 4.0K Apr 29 10:34 .github
--rw-r--r-- 1 runner runner    5 Apr 29 10:34 current_branch.txt
--rw-r--r-- 1 runner runner   21 Apr 29 10:34 error_log.txt
--rw-r--r-- 1 runner runner  16K Apr 29 10:34 fastdl_output.html
--rw-r--r-- 1 runner runner 1.5K Apr 29 10:34 fastdl_test.py
--rw-r--r-- 1 runner runner  417 Apr 29 10:34 git_status.txt
--rw-r--r-- 1 runner runner   16 Apr 29 10:34 script_finished.txt
--rw-r--r-- 1 runner runner   15 Apr 29 10:34 script_started.txt
--rw-r--r-- 1 runner runner   70 Apr 29 10:34 workspace_files.txt
+total 64K
+drwxr-xr-x 4 runner runner 4.0K Apr 29 10:39 .
+drwxr-xr-x 3 runner runner 4.0K Apr 29 10:39 ..
+drwxr-xr-x 7 runner runner 4.0K Apr 29 10:39 .git
+drwxr-xr-x 3 runner runner 4.0K Apr 29 10:39 .github
+-rw-r--r-- 1 runner runner    5 Apr 29 10:39 current_branch.txt
+-rw-r--r-- 1 runner runner 1.4K Apr 29 10:39 download.py
+-rw-r--r-- 1 runner runner   21 Apr 29 10:39 error_log.txt
+-rw-r--r-- 1 runner runner  16K Apr 29 10:39 fastdl_output.html
+-rw-r--r-- 1 runner runner 1.5K Apr 29 10:39 fastdl_test.py
+-rw-r--r-- 1 runner runner  384 Apr 29 10:39 git_status.txt
+-rw-r--r-- 1 runner runner   16 Apr 29 10:39 script_finished.txt
+-rw-r--r-- 1 runner runner   15 Apr 29 10:39 script_started.txt
+-rw-r--r-- 1 runner runner   70 Apr 29 10:39 workspace_files.txt
 
 === TREE ===
 ./.git/FETCH_HEAD
@@ -24,6 +25,7 @@ drwxr-xr-x 3 runner runner 4.0K Apr 29 10:34 .github
 ./.git/index
 ./.git/shallow
 ./current_branch.txt
+./download.py
 ./error_log.txt
 ./fastdl_output.html
 ./fastdl_test.py
