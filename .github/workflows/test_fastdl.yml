@@ -4,52 +4,51 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: write       # <‑‑ allow commits to the repo
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
-      - run: pip install requests
+      - name: Install dependencies
+        run: pip install requests
 
-      - name: Run test and save output
-        run: python fastdl_test.py
-
-      # Save branch name so we can see where the commit goes
-      - name: Show branch name
+      - name: Run test script
         run: |
-          git branch > current_branch.txt
+          echo "RUNNING TEST SCRIPT" > script_started.txt
+          python fastdl_test.py || echo "Script failed" > error_log.txt
+          echo "SCRIPT FINISHED" > script_finished.txt
 
-      # Save list of files in the workspace
-      - name: Save workspace file list
+      - name: Create debug files
         run: |
-          echo "=== FILE LIST AFTER PYTHON SCRIPT ===" > workspace_files.txt
+          echo "=== BRANCH INFO ===" > current_branch.txt
+          git branch >> current_branch.txt
+          echo "=== WORKSPACE FILES ===" > workspace_files.txt
           ls -lah >> workspace_files.txt
-
-      # Save git status
-      - name: Save git status
-        run: |
           echo "=== GIT STATUS ===" > git_status.txt
           git status >> git_status.txt
 
-      # Commit files back to the branch this workflow was triggered from
-      - name: Commit output to repo
+      - name: Commit output to the same branch
         run: |
           git config user.name "github-actions"
-          git config user.email "actions@github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Ensure we push to the correct branch
+          echo "Current branch according to runner:"
+          echo "${{ github.ref_name }}"
+
           git checkout ${{ github.ref_name }}
 
           git add fastdl_output.html error_log.txt script_started.txt script_finished.txt current_branch.txt workspace_files.txt git_status.txt || true
-          git commit -m "Add FastDL result and debug info" || echo "Nothing to commit"
-          git push || true
+          git commit -m "Add FastDL result and debug info (auto)" || echo "Nothing new to commit"
+          git push origin ${{ github.ref_name }} || echo "Push failed"
