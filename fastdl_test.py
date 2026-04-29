@@ -1,18 +1,20 @@
 import requests
+
 def test_fastdl(insta_url):
     fastdl_url = "https://fastdl.app/instagram/?url=" + insta_url
 
-    print("Requesting:", fastdl_url)
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
 
-    response = requests.get(fastdl_url)
+    r = requests.get(fastdl_url, headers=headers)
 
-    print("Status:", response.status_code)
-    print("--- PAGE CONTENT START ---")
-    print(response.text[:2000])   # print only the first 2000 characters
-    print("--- PAGE CONTENT END ---")
+    # Save response to a file
+    with open("fastdl_output.html", "w", encoding="utf-8") as f:
+        f.write(r.text)
+
+    print("Saved output to fastdl_output.html")
+
 
 if __name__ == "__main__":
-    # Example public post (any public IG post is OK)
-    instagram_post = "https://www.instagram.com/p/C6t-U-OPVOG/"
-
-    test_fastdl(instagram_post)
+    test_fastdl("https://www.instagram.com/p/C6t-U-OPVOG/")
