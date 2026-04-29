@@ -38,17 +38,31 @@ jobs:
           ls -lah >> workspace_files.txt
           echo "=== GIT STATUS ===" > git_status.txt
           git status >> git_status.txt
-
+          
       - name: Commit output to the same branch
         run: |
+          set -x
+
+          echo "Repo:"
+          git remote -v
+
+          echo "Current branch from GitHub context:"
+          echo "${{ github.ref_name }}"
+
+          echo "Git status before:"
+          git status
+
           git config user.name "github-actions"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          echo "Current branch according to runner:"
-          echo "${{ github.ref_name }}"
+          git checkout "${{ github.ref_name }}"
 
-          git checkout ${{ github.ref_name }}
+          git add .
 
-          git add fastdl_output.html error_log.txt script_started.txt script_finished.txt current_branch.txt workspace_files.txt git_status.txt || true
-          git commit -m "Add FastDL result and debug info (auto)" || echo "Nothing new to commit"
-          git push origin ${{ github.ref_name }} || echo "Push failed"
+          echo "Git status after add:"
+          git status
+
+          git commit -m "debug commit from action" || echo "Nothing to commit"
+
+          echo "Attempting push..."
+          git push origin "${{ github.ref_name }}"
