@@ -1,0 +1,12 @@
+=== WORKSPACE FILES ===
+total 52K
+drwxr-xr-x 4 runner runner 4.0K Apr 29 10:03 .
+drwxr-xr-x 3 runner runner 4.0K Apr 29 10:02 ..
+drwxr-xr-x 7 runner runner 4.0K Apr 29 10:02 .git
+drwxr-xr-x 3 runner runner 4.0K Apr 29 10:02 .github
+-rw-r--r-- 1 runner runner   27 Apr 29 10:03 current_branch.txt
+-rw-r--r-- 1 runner runner  16K Apr 29 10:03 fastdl_output.html
+-rw-r--r-- 1 runner runner  770 Apr 29 10:02 fastdl_test.py
+-rw-r--r-- 1 runner runner   16 Apr 29 10:03 script_finished.txt
+-rw-r--r-- 1 runner runner   27 Apr 29 10:03 script_started.txt
+-rw-r--r-- 1 runner runner   24 Apr 29 10:03 workspace_files.txt
