@@ -9,6 +9,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-python@v5
         with:
@@ -16,12 +18,13 @@ jobs:
 
       - run: pip install requests
 
-      - name: Run FastDL test
+      - name: Run test and save output
         run: python fastdl_test.py
 
-      - name: Upload FastDL output
-        uses: actions/upload-artifact@v4
-        with:
-          name: fastdl_html
-          path: fastdl_output.html
-          if-no-files-found: error
+      - name: Commit HTML output to repo
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add fastdl_output.html
+          git commit -m "Add FastDL output" || echo "No changes to commit"
+          git push
