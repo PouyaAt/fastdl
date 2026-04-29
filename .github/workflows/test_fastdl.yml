@@ -1,13 +1,18 @@
-name: Test FastDL
+name: Instagram Downloader
 
 on:
   workflow_dispatch:
+    inputs:
+      instagram_url:
+        description: "Instagram post URL"
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 jobs:
-  test-fastdl:
+  download-instagram:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,30 +24,27 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
-        run: |
-          pip install requests beautifulsoup4
+      - name: Install requirements
+        run: pip install requests beautifulsoup4
 
-      - name: Record branch
-        run: |
-          echo "${GITHUB_REF_NAME}" > current_branch.txt
+      - name: Export IG URL
+        run: echo "IG_URL=${{ github.event.inputs.instagram_url }}" >> $GITHUB_ENV
 
-      - name: Run FastDL test script
+      - name: Run downloader
         run: |
           echo "script started" > script_started.txt
-          python fastdl_test.py || echo "python script failed" > error_log.txt
+          python download.py || echo "python script failed" > error_log.txt
           echo "script finished" > script_finished.txt
 
-      - name: List workspace files
+      - name: Workspace file list
         run: |
           echo "=== WORKSPACE FILES ===" > workspace_files.txt
           ls -lh >> workspace_files.txt
 
-      - name: Save git status
-        run: |
-          git status > git_status.txt
+      - name: Git status
+        run: git status > git_status.txt
 
-      - name: Commit output to the same branch
+      - name: Commit results
         run: |
           git config user.name "github-actions"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -50,5 +52,5 @@ jobs:
           git checkout ${{ github.ref_name }}
 
           git add -A
-          git commit -m "Add FastDL result and debug info (auto)" || echo "Nothing to commit"
+          git commit -m "Downloaded Instagram media via FastDL" || echo "Nothing to commit"
           git push origin ${{ github.ref_name }}
