@@ -1,2 +1,1 @@
-=== BRANCH INFO ===
-* main
+main
